@@ -92,7 +92,8 @@ export default function Plans() {
     queryKey: ["plans"],
     queryFn: () => api.get("/plans").then((r) => r.data),
   });
-  const plans = data?.plans || DEMO_PLANS;
+  //const plans = data?.plans || DEMO_PLANS;
+  const plans = data?.plans && data.plans.length > 0 ? data.plans : DEMO_PLANS;
   const allFeatures = [
     ...new Set(plans.flatMap((p) => p.features.map((f) => f.label))),
   ];
