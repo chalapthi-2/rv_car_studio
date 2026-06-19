@@ -95,8 +95,12 @@ const app = express();
 app.use(helmet());
 
 app.use(cors({
-  origin: process.env.CLIENT_URL || 'http://localhost:3000',
-  credentials: true,
+  origin: [
+    'http://localhost:3000',
+    'http://localhost:3001',
+    'https://rv-car-studio.vercel.app'
+  ],
+  credentials: true
 }));
 
 const limiter = rateLimit({
