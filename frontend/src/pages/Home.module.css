@@ -1,6 +1,7 @@
-.page { padding-top: var(--nav-h); }
+/* /* .page { padding-top: var(--nav-h); }
 
 /* ── HERO ── */
+
 .hero { background: var(--ink); overflow: hidden; }
 .heroInner { padding: 80px 0 60px; }
 .heroContent { max-width: 600px; }
@@ -55,6 +56,7 @@
 }
 
 /* ── SERVICES ── */
+
 .servicesGrid { margin-top: 8px; }
 .serviceCard { padding: 24px; transition: transform 0.15s, box-shadow 0.15s; }
 .serviceCard:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); }
@@ -66,6 +68,7 @@
 .svcPrice { font-size: 13px; font-weight: 600; color: var(--accent2); }
 
 /* ── PLANS ── */
+
 .plansSection { background: #fff; }
 .planCard { padding: 28px 22px; position: relative; transition: transform 0.15s, box-shadow 0.15s; }
 .planCard:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); }
@@ -85,6 +88,7 @@
 .planBtn { width: 100%; justify-content: center; }
 
 /* ── REVIEWS ── */
+
 .reviewCard { padding: 22px; }
 .reviewStars { color: var(--gold); font-size: 14px; margin-bottom: 10px; }
 .reviewText { font-size: 13px; color: var(--ink2); line-height: 1.6; margin-bottom: 14px; font-style: italic; }
@@ -93,6 +97,7 @@
 .reviewFooter span { font-size: 11px; color: var(--mute); }
 
 /* ── CTA BANNER ── */
+
 .ctaBanner { background: var(--ink); border-radius: var(--radius-lg); padding: 40px 48px; display: flex; align-items: center; justify-content: space-between; gap: 24px; flex-wrap: wrap; }
 .ctaTitle { font-family: var(--font-display); font-size: 40px; color: #fff; margin-bottom: 6px; }
 .ctaBanner p { font-size: 14px; color: rgba(255,255,255,0.4); }
@@ -102,4 +107,159 @@
   .heroStats { gap: 28px; }
   .ctaBanner { flex-direction: column; padding: 28px 24px; }
   .ctaTitle { font-size: 32px; }
+} 
+
+/* =========================================
+   RESPONSIVE DESIGN
+========================================= */
+
+/* Tablet */
+@media screen and (max-width: 1024px) {
+
+  .heroInner {
+    flex-direction: column;
+    text-align: center;
+    gap: 40px;
+  }
+
+  .heroContent {
+    max-width: 100%;
+  }
+
+  .heroImage {
+    justify-content: center;
+    width: 100%;
+  }
+
+  .heroCar {
+    max-width: 500px;
+    width: 100%;
+  }
+
+  .heroStats {
+    justify-content: center;
+    gap: 30px;
+  }
+}
+
+/* Mobile */
+@media screen and (max-width: 768px) {
+
+  .hero {
+    padding: 20px 0;
+  }
+
+  .heroInner {
+    flex-direction: column;
+    text-align: center;
+    gap: 25px;
+    padding: 30px 0;
+  }
+
+  .heroContent {
+    width: 100%;
+  }
+
+  .heroTag {
+    font-size: 10px;
+    letter-spacing: 2px;
+  }
+
+  .heroTitle {
+    font-size: 52px;
+    line-height: 0.95;
+  }
+
+  .heroSub {
+    max-width: 100%;
+    font-size: 14px;
+    margin-bottom: 20px;
+  }
+
+  .heroImage {
+    order: -1;
+    justify-content: center;
+  }
+
+  .heroCar {
+    width: 100%;
+    max-width: 350px;
+  }
+
+  .heroCtas {
+    justify-content: center;
+    gap: 10px;
+  }
+
+  .heroStats {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    text-align: center;
+    margin-top: 25px;
+  }
+
+  .statNum {
+    font-size: 28px;
+  }
+
+  .statLabel {
+    font-size: 11px;
+  }
+
+  .hoursStrip {
+    flex-direction: column;
+    text-align: center;
+    gap: 8px;
+    padding: 12px;
+  }
+
+  .openBadge {
+    margin-left: 0;
+  }
+}
+
+/* Small phones (iPhone SE, Android small devices) */
+@media screen and (max-width: 480px) {
+
+  .heroTitle {
+    font-size: 40px;
+  }
+
+  .heroSub {
+    font-size: 13px;
+  }
+
+  .heroCar {
+    max-width: 280px;
+  }
+
+  .heroStats {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+
+  .heroCtas {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .heroCtas a,
+  .heroCtas button {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .statNum {
+    font-size: 24px;
+  }
+
+  .hoursStrip {
+    font-size: 12px;
+  }
+}
+
+html,
+body {
+  overflow-x: hidden;
 }
