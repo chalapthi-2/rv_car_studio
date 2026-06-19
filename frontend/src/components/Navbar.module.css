@@ -90,3 +90,111 @@
   }
   .links.open { transform: translateY(0); }
 }
+
+/*recent */
+/* =====================================
+   MOBILE NAVBAR
+===================================== */
+
+@media (max-width: 768px) {
+
+  .inner {
+    padding: 0 16px;
+  }
+
+  .logo {
+    font-size: 20px;
+  }
+
+  .hamburger {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 42px;
+    height: 42px;
+    cursor: pointer;
+    z-index: 999;
+  }
+
+  .hamburger span {
+    width: 24px;
+    height: 3px;
+    background: #fff;
+  }
+
+  .links {
+    position: fixed;
+    top: var(--nav-h);
+    left: 0;
+    width: 100%;
+    background: #0a0a0a;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+
+    padding: 25px 20px 35px;
+
+    transform: translateY(-120%);
+    transition: all 0.3s ease;
+
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+
+    box-shadow: 0 12px 30px rgba(0,0,0,0.4);
+  }
+
+  .links.open {
+    transform: translateY(0);
+  }
+
+  .link {
+    width: 100%;
+    text-align: center;
+    font-size: 16px;
+    padding: 10px 0;
+    color: #fff;
+  }
+
+  .userMenu {
+    width: 100%;
+    flex-direction: column;
+    gap: 12px;
+    align-items: center;
+  }
+
+  .userName {
+    font-size: 15px;
+  }
+
+  .logoutBtn {
+    font-size: 14px;
+  }
+
+  .bookBtn {
+    width: 100%;
+    max-width: 250px;
+    justify-content: center;
+    text-align: center;
+  }
+}
+
+/* Small Phones */
+
+@media (max-width: 480px) {
+
+  .logo {
+    font-size: 18px;
+    letter-spacing: 1px;
+  }
+
+  .link {
+    font-size: 15px;
+  }
+
+  .bookBtn {
+    width: 100%;
+  }
+}
+.nav {
+  overflow: visible;
+}
