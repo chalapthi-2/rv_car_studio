@@ -47,14 +47,7 @@ const AppContent = () => (
       <Route path="/plans" element={<Plans />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
-      <Route
-        path="/book"
-        element={
-          <ProtectedRoute>
-            <Booking />
-          </ProtectedRoute>
-        }
-      />
+     <Route path="/book" element={<Booking />} />
       <Route
         path="/my-bookings"
         element={

@@ -54,11 +54,17 @@ export default function Navbar() {
               </div>
             </>
           ) : (
-            <Link to="/login" className={styles.link} onClick={() => setMenuOpen(false)}>Login</Link>
+           // <Link to="/login" className={styles.link} onClick={() => setMenuOpen(false)}>Login</Link>
           )}
-          <Link to="/book" className={`btn btn-primary ${styles.bookBtn}`} onClick={() => setMenuOpen(false)}>
-            Book Now
-          </Link>
+          <>
+  <Link
+    to="/book"
+    className={`btn btn-primary ${styles.bookBtn}`}
+    onClick={() => setMenuOpen(false)}
+  >
+    Book Now
+  </Link>
+</>
         </div>
 
         <button className={styles.hamburger} onClick={() => setMenuOpen(!menuOpen)}

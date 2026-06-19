@@ -17,10 +17,10 @@ api.interceptors.response.use(
   (res) => res,
   (err) => {
     if (err.response?.status === 401) {
-      localStorage.removeItem('splashx_token');
-      localStorage.removeItem('splashx_user');
-      window.location.href = '/login';
-    }
+  localStorage.removeItem('splashx_token');
+  localStorage.removeItem('splashx_user');
+}
+    
     return Promise.reject(err);
   }
 );
