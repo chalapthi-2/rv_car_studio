@@ -288,7 +288,7 @@ export default function Services() {
           <p>
             Call us and our team will recommend the best package for your car.
           </p>
-          <a href="tel:+917382380420" className="btn btn-primary">
+          <a href="tel:+919182230364" className="btn btn-primary">
             📞 Call Studio
           </a>
         </div>
