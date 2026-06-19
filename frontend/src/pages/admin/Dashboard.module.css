@@ -1,0 +1,42 @@
+.page { padding-top: var(--nav-h); padding-bottom: 60px; }
+.header { background: var(--ink); padding: 50px 0 40px; }
+.title  { font-family: var(--font-display); font-size: 56px; color: #fff; }
+
+.statsGrid { display: grid; grid-template-columns: repeat(6,1fr); gap: 12px; padding: 28px 0 8px; }
+.statCard  { padding: 18px; text-align: center; }
+.statIcon  { font-size: 22px; margin-bottom: 6px; }
+.statVal   { font-family: var(--font-display); font-size: 28px; margin-bottom: 2px; line-height: 1; }
+.statLabel { font-size: 11px; color: var(--mute); }
+
+.tabs   { display: flex; gap: 0; border-bottom: 1px solid var(--border); margin: 16px 0 0; }
+.tab    { padding: 11px 20px; font-size: 13px; font-weight: 500; color: var(--mute); border-bottom: 2px solid transparent; margin-bottom: -1px; cursor: pointer; background: none; border-top: none; border-left: none; border-right: none; transition: all .15s; }
+.tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+.tab:hover:not(.active) { color: var(--ink); }
+
+.tableControls { display: flex; align-items: center; gap: 10px; padding: 16px 0 12px; flex-wrap: wrap; }
+.count { font-size: 12px; color: var(--mute); margin-left: auto; }
+
+.loading  { padding: 60px; text-align: center; color: var(--mute); }
+.tableWrap { overflow-x: auto; margin-bottom: 40px; border-radius: var(--radius-md); border: 1px solid var(--border); }
+
+.table { width: 100%; border-collapse: collapse; background: var(--card); font-size: 13px; }
+.table th { background: var(--ink); color: rgba(255,255,255,.7); padding: 12px 14px; text-align: left; font-size: 11px; letter-spacing: .5px; text-transform: uppercase; font-family: var(--font-body); font-weight: 600; white-space: nowrap; }
+.table td { padding: 12px 14px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+.table tr:last-child td { border-bottom: none; }
+.table tr:hover td { background: var(--surface); }
+
+.bookingId   { font-family: monospace; font-size: 11px; color: var(--accent); }
+.customerCell strong { display: block; font-size: 13px; color: var(--ink); }
+.customerCell span   { font-size: 11px; color: var(--mute); }
+
+/* Reviews */
+.reviewsGrid { display: grid; grid-template-columns: repeat(2,1fr); gap: 14px; margin-top: 20px; padding-bottom: 40px; }
+.reviewCard  { padding: 18px; }
+.reviewTop   { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
+.reviewTop strong { font-size: 13px; color: var(--ink); display: block; }
+.vehicleTag  { font-size: 11px; color: var(--mute); }
+.reviewText  { font-size: 12px; color: var(--ink2); line-height: 1.5; margin-bottom: 12px; font-style: italic; }
+.reviewActions { display: flex; justify-content: space-between; align-items: center; }
+
+@media (max-width: 1024px) { .statsGrid { grid-template-columns: repeat(3,1fr); } }
+@media (max-width: 640px)  { .statsGrid { grid-template-columns: repeat(2,1fr); } .reviewsGrid { grid-template-columns: 1fr; } }
