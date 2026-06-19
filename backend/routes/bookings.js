@@ -3,7 +3,7 @@ const router = express.Router();
 const { body, validationResult } = require('express-validator');
 const Booking  = require('../models/Booking');
 const TimeSlot = require('../models/TimeSlot');
-const User     = require('../models/User');
+//const User     = require('../models/User');
 const { protect, adminOnly } = require('../middleware/auth');
 const { sendBookingConfirmation, sendCancellationEmail } = require('../config/email');
 
@@ -19,53 +19,186 @@ router.get('/my', protect, async (req, res) => {
   }
 });
 
-// POST /api/bookings — create a new booking
-router.post('/', protect, [
-  body('serviceId').notEmpty().withMessage('Service is required'),
-  body('vehicleType').isIn(['hatchback','sedan','suv','muv','luxury']).withMessage('Invalid vehicle type'),
-  body('appointmentDate').isISO8601().withMessage('Valid date required'),
-  body('timeSlot.start').notEmpty().withMessage('Start time required'),
-  body('timeSlot.end').notEmpty().withMessage('End time required'),
-  body('amount.total').isNumeric().withMessage('Amount required'),
+// // POST /api/bookings — create a new booking
+// router.post('/', protect, [
+//   body('serviceId').notEmpty().withMessage('Service is required'),
+//   body('vehicleType').isIn(['hatchback','sedan','suv','muv','luxury']).withMessage('Invalid vehicle type'),
+//   body('appointmentDate').isISO8601().withMessage('Valid date required'),
+//   body('timeSlot.start').notEmpty().withMessage('Start time required'),
+//   body('timeSlot.end').notEmpty().withMessage('End time required'),
+//   body('amount.total').isNumeric().withMessage('Amount required'),
+// ], async (req, res) => {
+//   const errors = validationResult(req);
+//   if (!errors.isEmpty()) {
+//     return res.status(400).json({ success: false, errors: errors.array() });
+//   }
+
+// router.post('/', [
+  
+//   body('customerName').notEmpty().withMessage('Name is required'),
+//   body('phone').notEmpty().withMessage('Phone is required'),
+
+//   body('serviceId').notEmpty().withMessage('Service is required'),
+
+//   body('vehicleType')
+//     .isIn(['hatchback','sedan','suv','muv','luxury'])
+//     .withMessage('Invalid vehicle type'),
+
+//   body('appointmentDate')
+//     .isISO8601()
+//     .withMessage('Valid date required'),
+
+//   body('timeSlot.start')
+//     .notEmpty()
+//     .withMessage('Start time required'),
+
+//   body('timeSlot.end')
+//     .notEmpty()
+//     .withMessage('End time required'),
+
+//   body('amount.total')
+//     .isNumeric()
+//     .withMessage('Amount required'),
+// ], async (req, res) => {
+//   try {
+//     const { serviceId, planId, vehicleType, vehicleMake, vehicleModel, vehicleReg,
+//             appointmentDate, timeSlot, amount, addOns, notes } = req.body;
+
+//     // Check slot availability
+//     const apptDate = new Date(appointmentDate);
+//     apptDate.setHours(0, 0, 0, 0);
+//     const slotDoc = await TimeSlot.findOne({ date: apptDate });
+
+//     if (slotDoc) {
+//       const slot = slotDoc.slots.find(s => s.start === timeSlot.start);
+//       if (slot && (slot.isBlocked || slot.booked >= slot.capacity)) {
+//         return res.status(400).json({ success: false, message: 'This time slot is no longer available.' });
+//       }
+//       // Increment booked count
+//       if (slot) {
+//         slot.booked += 1;
+//         await slotDoc.save();
+//       }
+//     }
+
+router.post('/', [
+
+  body('customerName')
+    .notEmpty()
+    .withMessage('Name is required'),
+
+  body('phone')
+    .notEmpty()
+    .withMessage('Phone is required'),
+
+  body('serviceId')
+    .notEmpty()
+    .withMessage('Service is required'),
+
+  body('vehicleType')
+    .isIn(['hatchback', 'sedan', 'suv', 'muv', 'luxury'])
+    .withMessage('Invalid vehicle type'),
+
+  body('appointmentDate')
+    .isISO8601()
+    .withMessage('Valid date required'),
+
+  body('timeSlot.start')
+    .notEmpty()
+    .withMessage('Start time required'),
+
+  body('timeSlot.end')
+    .notEmpty()
+    .withMessage('End time required'),
+
+  body('amount.total')
+    .isNumeric()
+    .withMessage('Amount required'),
+
 ], async (req, res) => {
+
   const errors = validationResult(req);
+
   if (!errors.isEmpty()) {
-    return res.status(400).json({ success: false, errors: errors.array() });
+    return res.status(400).json({
+      success: false,
+      errors: errors.array(),
+    });
   }
 
   try {
-    const { serviceId, planId, vehicleType, vehicleMake, vehicleModel, vehicleReg,
-            appointmentDate, timeSlot, amount, addOns, notes } = req.body;
+
+    const {
+      customerName,
+      phone,
+      email,
+      serviceId,
+      planId,
+      vehicleType,
+      vehicleMake,
+      vehicleModel,
+      vehicleReg,
+      appointmentDate,
+      timeSlot,
+      amount,
+      addOns,
+      notes
+    } = req.body;
 
     // Check slot availability
     const apptDate = new Date(appointmentDate);
     apptDate.setHours(0, 0, 0, 0);
-    const slotDoc = await TimeSlot.findOne({ date: apptDate });
+
+    const slotDoc = await TimeSlot.findOne({
+      date: apptDate,
+    });
 
     if (slotDoc) {
-      const slot = slotDoc.slots.find(s => s.start === timeSlot.start);
-      if (slot && (slot.isBlocked || slot.booked >= slot.capacity)) {
-        return res.status(400).json({ success: false, message: 'This time slot is no longer available.' });
+      const slot = slotDoc.slots.find(
+        (s) => s.start === timeSlot.start
+      );
+
+      if (
+        slot &&
+        (slot.isBlocked || slot.booked >= slot.capacity)
+      ) {
+        return res.status(400).json({
+          success: false,
+          message: 'This time slot is no longer available.',
+        });
       }
-      // Increment booked count
+
       if (slot) {
         slot.booked += 1;
         await slotDoc.save();
       }
     }
 
+    // Continue with service lookup and booking creation...
     // Populate service details
     const Service = require('../models/Service');
     const service = await Service.findById(serviceId);
     if (!service) return res.status(404).json({ success: false, message: 'Service not found' });
 
-    const booking = await Booking.create({
-      customer: req.user._id,
-      customerSnapshot: {
-        name:  req.user.name,
-        email: req.user.email,
-        phone: req.user.phone,
-      },
+//     const booking = await Booking.create({
+//       customerName: req.body.customerName,
+//       phone: req.body.phone,
+//       email: req.body.email || '',
+//       customerSnapshot: {
+//   name: req.body.customerName,
+//   email: req.body.email || '',
+//   phone: req.body.phone,
+// },
+const booking = await Booking.create({
+  customerName,
+  phone,
+  email: email || '',
+
+  customerSnapshot: {
+    name: customerName,
+    email: email || '',
+    phone,
+  },
       service: serviceId,
       serviceSnapshot: { name: service.name, icon: service.icon },
       plan: planId || undefined,
@@ -88,22 +221,19 @@ router.post('/', protect, [
       status: 'confirmed',
     });
 
-    // Increment user's booking count
-    await User.findByIdAndUpdate(req.user._id, {
-      $inc: { totalBookings: 1, loyaltyPoints: 50 },
-    });
+    
 
     // Send confirmation email (non-blocking)
     sendBookingConfirmation({
-      to:       req.user.email,
-      name:     req.user.name,
-      bookingId: booking.bookingId,
-      service:  service.name,
-      date:     booking.appointmentDate,
-      timeSlot: `${timeSlot.start} – ${timeSlot.end}`,
-      vehicle:  `${vehicleMake || ''} ${vehicleModel || ''} (${vehicleType})`.trim(),
-      amount:   amount.total,
-    }).catch(console.error);
+  to: req.body.email,
+  name: req.body.customerName,
+  bookingId: booking.bookingId,
+  service: service.name,
+  date: booking.appointmentDate,
+  timeSlot: `${timeSlot.start} – ${timeSlot.end}`,
+  vehicle: `${vehicleMake || ''} ${vehicleModel || ''} (${vehicleType})`.trim(),
+  amount: amount.total,
+}).catch(console.error);
 
     res.status(201).json({ success: true, booking });
   } catch (err) {

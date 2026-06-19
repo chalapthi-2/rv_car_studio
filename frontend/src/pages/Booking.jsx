@@ -4,7 +4,7 @@ import { useQuery, useMutation } from '@tanstack/react-query';
 import { motion, AnimatePresence } from 'framer-motion';
 import toast from 'react-hot-toast';
 import api from '../utils/api';
-import { useAuth } from '../context/AuthContext';
+
 import styles from './Booking.module.css';
 
 const SERVICES_DEMO = [
@@ -23,25 +23,47 @@ function todayStr() {
   return new Date().toISOString().split('T')[0];
 }
 
-const STEPS = ['Service','Vehicle','Date & Time','Confirm'];
+//const STEPS = ['Service','Vehicle','Date & Time','Confirm'];
+const STEPS = [
+  'Customer',
+  'Service',
+  'Vehicle',
+  'Date & Time',
+  'Confirm'
+];
 
 export default function Booking() {
-  const { user } = useAuth();
+  
   const navigate = useNavigate();
   const [params] = useSearchParams();
   const [step, setStep] = useState(0);
 
+  // const [form, setForm] = useState({
+  //   serviceId:   params.get('service') || '',
+  //   vehicleType: 'hatchback',
+  //   vehicleMake: '',
+  //   vehicleModel: '',
+  //   vehicleReg: '',
+  //   date: todayStr(),
+  //   slotStart: '',
+  //   slotEnd: '',
+  //   notes: '',
+  // });
   const [form, setForm] = useState({
-    serviceId:   params.get('service') || '',
-    vehicleType: 'hatchback',
-    vehicleMake: '',
-    vehicleModel: '',
-    vehicleReg: '',
-    date: todayStr(),
-    slotStart: '',
-    slotEnd: '',
-    notes: '',
-  });
+  customerName: '',
+  phone: '',
+  email: '',
+
+  serviceId: params.get('service') || '',
+  vehicleType: 'hatchback',
+  vehicleMake: '',
+  vehicleModel: '',
+  vehicleReg: '',
+  date: todayStr(),
+  slotStart: '',
+  slotEnd: '',
+  notes: '',
+});
 
   const { data: servData } = useQuery({ queryKey:['services'], queryFn:()=>api.get('/services').then(r=>r.data) });
   const services = servData?.services || SERVICES_DEMO;
@@ -59,20 +81,48 @@ export default function Booking() {
     : 0;
 
   const bookMutation = useMutation({
+    // mutationFn: () => api.post('/bookings', {
+    //   serviceId: form.serviceId,
+    //   vehicleType: form.vehicleType,
+    //   vehicleMake: form.vehicleMake,
+    //   vehicleModel: form.vehicleModel,
+    //   vehicleReg: form.vehicleReg,
+    //   appointmentDate: form.date,
+    //   timeSlot: { start: form.slotStart, end: form.slotEnd },
+    //   notes: form.notes,
+    //   amount: { base: totalAmount, discount: 0, tax: 0, total: totalAmount },
+    // }),
     mutationFn: () => api.post('/bookings', {
-      serviceId: form.serviceId,
-      vehicleType: form.vehicleType,
-      vehicleMake: form.vehicleMake,
-      vehicleModel: form.vehicleModel,
-      vehicleReg: form.vehicleReg,
-      appointmentDate: form.date,
-      timeSlot: { start: form.slotStart, end: form.slotEnd },
-      notes: form.notes,
-      amount: { base: totalAmount, discount: 0, tax: 0, total: totalAmount },
-    }),
+  customerName: form.customerName,
+  phone: form.phone,
+  email: form.email,
+
+  serviceId: form.serviceId,
+  vehicleType: form.vehicleType,
+  vehicleMake: form.vehicleMake,
+  vehicleModel: form.vehicleModel,
+  vehicleReg: form.vehicleReg,
+
+  appointmentDate: form.date,
+
+  timeSlot: {
+    start: form.slotStart,
+    end: form.slotEnd,
+  },
+
+  notes: form.notes,
+
+  amount: {
+    base: totalAmount,
+    discount: 0,
+    tax: 0,
+    total: totalAmount,
+  },
+}),
+
     onSuccess: (res) => {
       toast.success(`Booking confirmed! ID: ${res.data.booking.bookingId}`);
-      navigate('/my-bookings');
+      navigate('/');
     },
     onError: (err) => {
       toast.error(err.response?.data?.message || 'Booking failed. Please try again.');
@@ -82,11 +132,23 @@ export default function Booking() {
   const set = (k, v) => setForm(f => ({ ...f, [k]: v }));
 
   const next = () => {
-    if (step === 0 && !form.serviceId) { toast.error('Please select a service'); return; }
-    if (step === 1 && !form.vehicleType) { toast.error('Please select vehicle type'); return; }
-    if (step === 2 && (!form.date || !form.slotStart)) { toast.error('Please pick a date and time slot'); return; }
-    setStep(s => s + 1);
-  };
+  if (step === 0 && (!form.customerName || !form.phone)) {
+    toast.error('Name and Mobile Number are required');
+    return;
+  }
+
+  if (step === 1 && !form.serviceId) {
+    toast.error('Please select a service');
+    return;
+  }
+
+  if (step === 3 && (!form.date || !form.slotStart)) {
+    toast.error('Please pick a date and time slot');
+    return;
+  }
+
+  setStep(s => s + 1);
+};
 
   return (
     <div className={styles.page}>
@@ -127,7 +189,7 @@ export default function Booking() {
                 transition={{duration:0.25}}>
 
                 {/* STEP 0: Service */}
-                {step === 0 && (
+                {/* {step === 0 && (
                   <div>
                     <h2 className={styles.stepTitle}>Choose a Service</h2>
                     <div className={styles.serviceGrid}>
@@ -142,10 +204,66 @@ export default function Booking() {
                       ))}
                     </div>
                   </div>
-                )}
+                )} */}
+                {step === 0 && (
+  <div>
+    <h2 className={styles.stepTitle}>Customer Details</h2>
 
+    <div className={styles.field}>
+      <label>Full Name *</label>
+      <input
+        value={form.customerName}
+        onChange={(e) => set('customerName', e.target.value)}
+        placeholder="Enter your full name"
+      />
+    </div>
+
+    <div className={styles.field}>
+      <label>Mobile Number *</label>
+      <input
+        value={form.phone}
+        onChange={(e) => set('phone', e.target.value)}
+        placeholder="9876543210"
+      />
+    </div>
+
+    <div className={styles.field}>
+      <label>Email (Optional)</label>
+      <input
+        value={form.email}
+        onChange={(e) => set('email', e.target.value)}
+        placeholder="example@gmail.com"
+      />
+    </div>
+  </div>
+)}
+
+{step === 1 && (
+  <div>
+    <h2 className={styles.stepTitle}>Choose a Service</h2>
+
+    <div className={styles.serviceGrid}>
+      {services.map(s => (
+        <button
+          key={s._id}
+          type="button"
+          className={`${styles.serviceOption} ${
+            form.serviceId === s._id ? styles.selected : ''
+          }`}
+          onClick={() => set('serviceId', s._id)}
+        >
+          <span className={styles.svcIcon}>{s.icon}</span>
+          <span className={styles.svcName}>{s.name}</span>
+          <span className={styles.svcPrice}>
+            from ₹{s.basePrice.hatchback}
+          </span>
+        </button>
+      ))}
+    </div>
+  </div>
+)}
                 {/* STEP 1: Vehicle */}
-                {step === 1 && (
+                {step === 2 && (
                   <div>
                     <h2 className={styles.stepTitle}>Vehicle Details</h2>
                     <div className={styles.fieldGroup}>
@@ -178,7 +296,7 @@ export default function Booking() {
                 )}
 
                 {/* STEP 2: Date & Time */}
-                {step === 2 && (
+                {step === 3 && (
                   <div>
                     <h2 className={styles.stepTitle}>Pick a Date & Slot</h2>
                     <div className={styles.field}>
@@ -214,12 +332,12 @@ export default function Booking() {
                 )}
 
                 {/* STEP 3: Confirm */}
-                {step === 3 && (
+                {step === 4 && (
                   <div>
                     <h2 className={styles.stepTitle}>Confirm Booking</h2>
                     <div className={styles.confirmCard}>
-                      <div className={styles.confirmRow}><span>Customer</span><strong>{user?.name}</strong></div>
-                      <div className={styles.confirmRow}><span>Phone</span><strong>{user?.phone}</strong></div>
+                      <div className={styles.confirmRow}><span>Customer</span><strong>{form.customerName}</strong></div>
+                      <div className={styles.confirmRow}><span>Phone</span><strong>{form.phone}</strong></div>
                       <div className={styles.confirmRow}><span>Service</span><strong>{selectedService?.icon} {selectedService?.name}</strong></div>
                       <div className={styles.confirmRow}><span>Vehicle</span><strong>{form.vehicleMake} {form.vehicleModel} ({form.vehicleType})</strong></div>
                       <div className={styles.confirmRow}><span>Date</span><strong>{new Date(form.date+'T00:00:00').toLocaleDateString('en-IN',{weekday:'long',day:'numeric',month:'long'})}</strong></div>
@@ -227,7 +345,9 @@ export default function Booking() {
                       {form.notes && <div className={styles.confirmRow}><span>Notes</span><strong>{form.notes}</strong></div>}
                       <div className={styles.confirmTotal}><span>Total Amount</span><strong>₹{totalAmount}</strong></div>
                     </div>
-                    <p className={styles.confirmNote}>💡 Payment collected at studio. A confirmation will be sent to {user?.email}.</p>
+                    <p className={styles.confirmNote}>
+  💡 Payment collected at studio. A confirmation will be sent to {form.email || form.phone}.
+</p>
                   </div>
                 )}
 
@@ -239,7 +359,7 @@ export default function Booking() {
               {step > 0 && (
                 <button className="btn btn-outline" onClick={() => setStep(s=>s-1)}>← Back</button>
               )}
-              {step < 3 ? (
+              {step < 4 ? (
                 <button className="btn btn-primary" style={{marginLeft:'auto'}} onClick={next}>
                   Continue →
                 </button>

@@ -6,11 +6,20 @@ const bookingSchema = new mongoose.Schema(
       type: String,
       unique: true,
     },
-    customer: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'User',
-      required: true,
-    },
+   customerName: {
+  type: String,
+  required: true,
+},
+
+phone: {
+  type: String,
+  required: true,
+},
+
+email: {
+  type: String,
+  default: '',
+},
     // Denormalized for display without populate
     customerSnapshot: {
       name:  String,
@@ -96,7 +105,7 @@ bookingSchema.pre('save', async function (next) {
 
 // ─── Indexes for common queries ───────────────────────────────────────────────
 bookingSchema.index({ appointmentDate: 1, status: 1 });
-bookingSchema.index({ customer: 1, createdAt: -1 });
+bookingSchema.index({ phone: 1, createdAt: -1 });
 bookingSchema.index({ bookingId: 1 });
 
 module.exports = mongoose.model('Booking', bookingSchema);
